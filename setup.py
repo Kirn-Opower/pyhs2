@@ -11,9 +11,9 @@ setup(
     description='Python Hive Server 2 Client Driver',
     long_description=open('README.md').read(),
     install_requires=[
-        "sasl",
         "thrift",
     ],
+    extras_require={'sasl': ['sasl']},
     test_suite='pyhs2.test',
     tests_require=["mock"]
 

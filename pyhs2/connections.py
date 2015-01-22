@@ -3,8 +3,12 @@ import sys
 from thrift.protocol.TBinaryProtocol import TBinaryProtocol
 from thrift.transport.TSocket import TSocket
 from thrift.transport.TTransport import TBufferedTransport
-import sasl
-from cloudera.thrift_sasl import TSaslClientTransport
+try:
+    import sasl
+    from cloudera.thrift_sasl import TSaslClientTransport
+    sasl_available = True
+except ImportError:
+    sasl_available = False
 
 from TCLIService import TCLIService
 
@@ -29,6 +33,8 @@ class Connection(object):
         if authMechanism == 'NOSASL':
             transport = TBufferedTransport(socket)
         else:
+            if not sasl_available:
+                raise ImportError("sasl required for auth mechanism %s, install with `pip install pyhs2[sasl]`" % authMechanism)
             sasl_mech = 'PLAIN'
             saslc = sasl.Client()
             saslc.setAttr("username", user)
